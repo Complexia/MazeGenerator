@@ -37,8 +37,9 @@ public class HuntAndKillGenerator implements MazeGenerator {
 		walk(currentCell,maze,mapCopy,l);
 		
 		//hunt and walk again recursively if need to
-
-		if(hunt(mapCopy,currentCell,maze,l)){
+		System.out.println("Current cell before hunt: " + currentCell.r + " || " + currentCell.c);
+		while(hunt(mapCopy,currentCell,maze,l)){
+			currentCell = globalCurrentCell;
 			System.out.println("Current cell after hunt: " + currentCell.r + " || " + currentCell.c);
 			walk(currentCell,maze,mapCopy,l);
 
@@ -105,7 +106,8 @@ public class HuntAndKillGenerator implements MazeGenerator {
 						if(mapCopy[maze.map[i][j].neigh[l.get(k)].r][maze.map[i][j].neigh[l.get(k)].c] != null){
 							maze.map[i][j].wall[l.get(k)].present = false;
 							currentCell = maze.map[i][j].neigh[l.get(k)];
-							System.out.println("Cell hunted: " + maze.map[i][j].neigh[l.get(k)].r + " || " + maze.map[i][j].neigh[l.get(k)].c);
+							globalCurrentCell = currentCell;
+							System.out.println("Cell hunted: " + currentCell.r + " || " + currentCell.c);
 							return true;
 						}
 					}
