@@ -51,14 +51,14 @@ public class RecursiveBacktrackerSolver implements MazeSolver {
 						maze.drawFtPrt(currentCell);
 						k = 0;
 						u = 0;
-						System.out.println("HHHHHHHHHHHHHHHHHHH");
+						
 						break;
 
 				}
 				if(i == l.size()-1 && u != 0){
-					System.out.println(currentCell.r + " || " + currentCell.c);					
+									
 					currentCell = visitedCells.get((visitedCells.size()-1)-k);
-					System.out.println(currentCell.r + " ||  " + currentCell.c + " after");	
+						
 
 				}
 
