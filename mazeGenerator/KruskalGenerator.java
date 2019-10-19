@@ -9,9 +9,18 @@ public class KruskalGenerator implements MazeGenerator {
 	@Override
 	public void generateMaze(Maze maze) {
 		
+		//a set of all possible edges, initially stored as disjointed trees
 		ArrayList<ArrayList<Cell>> edges = new ArrayList<ArrayList<Cell>>();
+
+		//a set of all cells, intially stored as disjointed sets
 		ArrayList<ArrayList<Cell>> cells = new ArrayList<ArrayList<Cell>>();
 		
+		//filling the list of all possible edges according to the following algorithm:
+		//if the cell is not on the extremes to the north or east, create edge with north neigh and east neigh
+		//if cell is on the east extreme, create edge only with north neigh
+		//if cell is on the north extreme, create edge only with east neigh
+		//if cell is on both extremes (corner cell), don't create any edge
+		//this generates ((2n-1) + 2(n^2 - 2n -1)) -1 number of edges for any given n x n maze
 		for(int i=0;i<maze.map.length;i++){
 			for(int j=0;j<maze.map.length;j++){
 				ArrayList<Cell> edge1 = new ArrayList<Cell>();
@@ -43,84 +52,17 @@ public class KruskalGenerator implements MazeGenerator {
 
 		
 
-		// while(edges.size() > 1){
-
-		// 	Random r = new Random();
-		// 	int e1 = r.nextInt(edges.size());
-		// 	int e2 = r.nextInt(edges.size());
-
-		// 	while(e1 == e2){
-		// 		e2 = r.nextInt(edges.size());
-
-		// 	}
-		// 	if(!(Collections.disjoint(edges.get(e1),edges.get(e2)))){
-		// 		edges.get(e1).addAll(edges.get(e2));
-				
-		// 		edges.remove(e2);
-		// 		// for(int i=0;i<edges.get(e1).size();i++){
-		// 		// 	for(int j=0;j<edges.get(e2).size();j++){
-
-		// 		// 	}
-		// 		// }
-
-
-		// 	}
-		// 	// else{
-
-		// 	// 	edges.remove(e1);
-		// 	// 	if(e1 > e2){
-		// 	// 		edges.remove(e2);
-		// 	// 	}
-		// 	// 	else{
-		// 	// 		edges.remove(e2-1);
-		// 	// 	}
-				
-		// 	// }
-
-		// }
-		System.out.println(edges.size());
-		// while(edges.size()>0){
-		// 	Random r = new Random();
-		// 	int e1 = r.nextInt(edges.size());
-
-		// 	for(int i=0;i<edges.size();i++){
-		// 		if(i != e1 && !Collections.disjoint(edges.get(e1),edges.get(i))){
-
-		// 			if(edges.get(e1).get(0).neigh[0] != null && 
-		// 				edges.get(e1).get(0).neigh[0].equals(edges.get(e1).get(1))){
-		// 				edges.get(e1).get(0).wall[0].present = false;
-		// 				maze.drawFtPrt(edges.get(e1).get(0));
-		// 				break;
-		// 			}
-		// 			if(edges.get(e1).get(0).neigh[2] != null && 
-		// 				edges.get(e1).get(0).neigh[2].equals(edges.get(e1).get(1))){
-		// 				edges.get(e1).get(0).wall[2].present = false;
-		// 				maze.drawFtPrt(edges.get(e1).get(0));
-		// 				break;
-		// 			}
-		// 			if(edges.get(e1).get(0).neigh[3] != null && 
-		// 				edges.get(e1).get(0).neigh[3].equals(edges.get(e1).get(1))){
-		// 				edges.get(e1).get(0).wall[3].present = false;
-		// 				maze.drawFtPrt(edges.get(e1).get(0));
-		// 				break;
-		// 			}
-		// 			if(edges.get(e1).get(0).neigh[5] != null && 
-		// 				edges.get(e1).get(0).neigh[5].equals(edges.get(e1).get(1))){
-		// 				edges.get(e1).get(0).wall[5].present = false;
-		// 				maze.drawFtPrt(edges.get(e1).get(0));
-		// 				break;
-		// 			}
-
-		// 		}
-		// 	}
-		// 	edges.remove(e1);
-		// }
-
+		
+		//until there is only one tree
 		while(cells.size() > 1){
 
-			Random r = new Random();
-			int e1 = r.nextInt(edges.size());
+			Random r = new Random(); 
+			int e1 = r.nextInt(edges.size()); //randomly selects an edge
 
+
+			//randomly selects an edge, and joins the 2 sets of cells belonging to the edge
+			//into one set of those cells. The below code carves passage between 2 cells 
+			//according to the edge selected
 			for(int i=0;i<cells.size();i++){
 				if((cells.get(i).contains(edges.get(e1).get(0)) && !cells.get(i).contains(edges.get(e1).get(1)) ) ){
 
@@ -144,7 +86,7 @@ public class KruskalGenerator implements MazeGenerator {
 							edges.get(e1).get(0).wall[5].present = false;
 							maze.drawFtPrt(edges.get(e1).get(0));
 						}
-
+						//joins the sets of cells (edges) together
 						for(int j=0;j<cells.size();j++){
 							if(cells.get(j).contains(edges.get(e1).get(0)) || cells.get(j).contains(edges.get(e1).get(1))){
 								cells.get(i).addAll(cells.get(j));
@@ -156,62 +98,15 @@ public class KruskalGenerator implements MazeGenerator {
 				}
 
 			}
+			//discards the edge after considering it
 			edges.remove(e1);
 
 		}
 		
-		
-
-
-
-
-		// System.out.println(edges.size());
-		// System.out.println(edges.get(0).size());
-		// for(int i=0;i<edges.get(0).size()-1;i+=2){
-			
-		// 	if((edges.get(0).get(i).neigh[0] != null) && 
-		// 		(edges.get(0).get(i).neigh[0].equals(edges.get(0).get(i+1)))){
-
-		// 		edges.get(0).get(i).wall[0].present = false;
-		// 		maze.drawFtPrt(edges.get(0).get(i));
-
-		// 	}
-
-		// 	else if((edges.get(0).get(i).neigh[2] != null) && 
-		// 		(edges.get(0).get(i).neigh[2].equals(edges.get(0).get(i+1)))){
-
-		// 		edges.get(0).get(i).wall[2].present = false;
-		// 		maze.drawFtPrt(edges.get(0).get(i));
-
-		// 	}
-
-		// 	else if((edges.get(0).get(i).neigh[3] != null) && 
-		// 		(edges.get(0).get(i).neigh[3].equals(edges.get(0).get(i+1)))){
-
-		// 		edges.get(0).get(i).wall[3].present = false;
-		// 		maze.drawFtPrt(edges.get(0).get(i));
-
-		// 	}
-
-		// 	else if((edges.get(0).get(i).neigh[5] != null) && 
-		// 		(edges.get(0).get(i).neigh[5].equals(edges.get(0).get(i+1)))){
-
-		// 		edges.get(0).get(i).wall[5].present = false;
-		// 		maze.drawFtPrt(edges.get(0).get(i));
-
-		// 	}
-		// }
-		
-
-
-
-
-
-
+	
 	} // end of generateMaze()
 
 	
-
 
 } // end of class KruskalGenerator
 
