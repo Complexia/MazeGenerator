@@ -9,11 +9,14 @@ import maze.Cell;
  */
 public class RecursiveBacktrackerSolver implements MazeSolver {
 
+
+	//a boolean for the isSolved method called by the tester
 	boolean mazeSolved = false;
 
 	@Override
 	public void solveMaze(Maze maze) {
 		
+		//shuffled in the adjust method in order to select random direction
 		Integer walls[] = new Integer[]{0,2,3,5};			
 		List<Integer> l = new LinkedList<Integer>(Arrays.asList(walls));
 
@@ -27,24 +30,30 @@ public class RecursiveBacktrackerSolver implements MazeSolver {
 		}
 
 		Cell currentCell = maze.entrance;
+
+		//tracking the cells previously visited in order, granting the ability to backtrack
 		List<Cell> visitedCells = new ArrayList<Cell>();
 		visitedCells.add(currentCell);
+
+		//the current cell's coords are updated as null so as to track the previously visited cells not in order
 		mapCopy[currentCell.r][currentCell.c] = null;
 		maze.drawFtPrt(currentCell);
-		l = adjustWallsAndNeighs(currentCell.r, currentCell.c, maze);
+		l = adjustWallsAndNeighs(currentCell.r, currentCell.c, maze); //shuffles directions
 		
-		//!visitedCells.get(visitedCells.size()-1).equals(currentCell.neigh[l.get(i)])
-		int k = 0;
-		int u = 0;
+		
+		int k = 0;	//the index at which to look for the backtracked cell, aumented with each backward step
+		int u = 0;  //a switch to detect whether a forward step was taken or not
 		while(currentCell != maze.exit){
 			u = 1;
 			l = adjustWallsAndNeighs(currentCell.r, currentCell.c, maze);
 			for(int i=0;i<l.size();i++){
+
+				//if the wall is not present and the cell was not previously visited, proceed in that direction
 				if(!currentCell.wall[l.get(i)].present && 
 					mapCopy[maze.map[currentCell.r][currentCell.c].neigh[l.get(i)].r][maze.map[currentCell.r][currentCell.c].neigh[l.get(i)].c] != null) {
 						
 						
-						
+						//step forward
 						currentCell = currentCell.neigh[l.get(i)];
 						mapCopy[currentCell.r][currentCell.c] = null;
 						visitedCells.add(currentCell);
@@ -55,6 +64,7 @@ public class RecursiveBacktrackerSolver implements MazeSolver {
 						break;
 
 				}
+				//if didn't step forward, then step backwards and update current cell
 				if(i == l.size()-1 && u != 0){
 									
 					currentCell = visitedCells.get((visitedCells.size()-1)-k);
@@ -63,6 +73,8 @@ public class RecursiveBacktrackerSolver implements MazeSolver {
 				}
 
 			}
+
+			//aumented with each backward step
 			if(k<visitedCells.size() && u != 0){
 				k++;
 			}
@@ -92,6 +104,7 @@ public class RecursiveBacktrackerSolver implements MazeSolver {
 		return 0;
 	} // end of cellsExplored()
 
+	//defines and shuffles directions for exploration
 	private List<Integer> adjustWallsAndNeighs(int r, int c, Maze maze){
 
 		Integer walls[] = new Integer[]{0,2,3,5};			
