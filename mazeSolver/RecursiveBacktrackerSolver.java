@@ -44,9 +44,30 @@ public class RecursiveBacktrackerSolver implements MazeSolver {
 		int k = 0;	//the index at which to look for the backtracked cell, aumented with each backward step
 		int u = 0;  //a switch to detect whether a forward step was taken or not
 		while(currentCell != maze.exit){
+
 			u = 1;
 			l = adjustWallsAndNeighs(currentCell.r, currentCell.c, maze);
 			for(int i=0;i<l.size();i++){
+
+
+				if(currentCell.tunnelTo != null && mapCopy[currentCell.tunnelTo.r][currentCell.tunnelTo.c] != null){
+					Random r = new Random();
+					int e1 = r.nextInt(2);
+					if(e1 == 0){
+						mapCopy[currentCell.r][currentCell.c] = null;
+						maze.drawFtPrt(currentCell);
+						currentCell = currentCell.tunnelTo;
+						maze.drawFtPrt(currentCell);
+						mapCopy[currentCell.r][currentCell.c] = null;
+						visitedCells.add(currentCell);
+						k = 0;
+						u = 0;
+						
+						break;
+
+					}
+
+				}
 
 				//if the wall is not present and the cell was not previously visited, proceed in that direction
 				if(!currentCell.wall[l.get(i)].present && 
@@ -54,6 +75,8 @@ public class RecursiveBacktrackerSolver implements MazeSolver {
 						
 						
 						//step forward
+
+						
 						currentCell = currentCell.neigh[l.get(i)];
 						mapCopy[currentCell.r][currentCell.c] = null;
 						visitedCells.add(currentCell);
@@ -66,9 +89,9 @@ public class RecursiveBacktrackerSolver implements MazeSolver {
 				}
 				//if didn't step forward, then step backwards and update current cell
 				if(i == l.size()-1 && u != 0){
-									
-					currentCell = visitedCells.get((visitedCells.size()-1)-k);
 						
+					currentCell = visitedCells.get((visitedCells.size()-1)-k);
+					maze.drawFtPrt(currentCell);
 
 				}
 

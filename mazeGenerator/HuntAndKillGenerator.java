@@ -52,16 +52,28 @@ public class HuntAndKillGenerator implements MazeGenerator {
 		boolean doneWalking = false;
 
 		while(doneWalking == false){
-
+			
 			//chooses appropriate random direction in which to seek neighbor
 			l = adjustWallsAndNeighs(currentCell.r, currentCell.c, maze);
 
 			//if neighbor of currentCell is not visited, carves passage, updates currentCell, and breaks loop
 			for(int i=0;i<l.size();i++){
 
+				if(currentCell.tunnelTo != null){
+					mapCopy[currentCell.r][currentCell.c] = null;
+					maze.drawFtPrt(currentCell);
+					currentCell = currentCell.tunnelTo;
+					currentCell.tunnelTo = null;
+					
+					maze.drawFtPrt(currentCell);
+					System.out.println("Here");
+					break;
+					
+				}
 				if(mapCopy[currentCell.neigh[l.get(i)].r][currentCell.neigh[l.get(i)].c] != null) {
 					currentCell.wall[l.get(i)].present = false;
 					mapCopy[currentCell.r][currentCell.c] = null;
+					
 					maze.drawFtPrt(currentCell);
 					currentCell = currentCell.neigh[l.get(i)];
 					break;
@@ -70,7 +82,9 @@ public class HuntAndKillGenerator implements MazeGenerator {
 				//if there are no unvisited neighbors, doneWalking is invoked and walking stage is finished
 				if(i == l.size()-1){
 					mapCopy[currentCell.r][currentCell.c] = null;
+
 					doneWalking = true;
+					maze.drawFtPrt(currentCell);
 				}
 			}
 		}
